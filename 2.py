@@ -73,8 +73,6 @@ company = {
 # A.Display all employees' names for the given project manager name
 print("1) Display all employees' names for the given project manager")
 print("---------------------------------------------------------------")
-print("1) Display all employees' names for the given project manager")
-print("---------------------------------------------------------------")
 
 pm_list = [
     input("Enter the first Project Manager name: ").strip(),
