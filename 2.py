@@ -83,7 +83,8 @@ for pm_name in pm_list:
     if pm_name not in company:
         print(f"Project Manager '{pm_name}' not found!")
         continue
-    print(f"Project Manager: {pm_name}")
+    else:
+        print(f"Project Manager: {pm_name}")
     pm_info = company[pm_name]
     for tl_name, tl_info in pm_info["TL"].items():
         print("TL:", tl_name)
@@ -92,11 +93,9 @@ for pm_name in pm_list:
             if emp_info.get("designation") == "TL":
                 for sub_emp in emp_info.get("employee", {}):
                     print(" Employee under TL:", sub_emp)
-            else:
-                print("This employee has no team under them")
 
 # B.Display names of only those employees whose
-# experience is more than 4 years. Iterate through PMs
+# experience is more than 4 years.
 print("\n2) Display names of only those employees whose"
       " experience is more than 4 years.")
 print("-------------------------------------------------------------")
@@ -119,7 +118,6 @@ print("----------------------------------------------------------")
 for pm_name, pm_info in company.items():
     print(f"\nProject Manager: {pm_name}")
     for tl_name, tl_info in pm_info["TL"].items():
-
         if tl_info.get("experience") and 3.5 < tl_info["experience"] < 4.5:
             tl_info["experience"] = 4.6
         print(f"TL: {tl_name}, Experience: {tl_info.get('experience')}")
@@ -144,47 +142,44 @@ for pm_name, pm_info in company.items():
 # experience (N/A if None)
 print("\n4) TLs with their year of experience (N/A if missing)")
 print("------------------------------------------------------")
-
 for pm_name, pm_info in company.items():
     print(f"\nProject Manager: {pm_name}")
     for tl_name, tl_info in pm_info["TL"].items():
-        exp = tl_info.get("experience") \
-            if tl_info.get("experience") is not None else "N/A"
-        print(f"  TL: {tl_name}, Experience: {exp}")
-
+        if tl_info.get("experience") is not None:
+            exp = tl_info["experience"]
+        else:
+            exp = "N/A"
+        print(f"TL: {tl_name}, Experience: {exp}")
         if "employee" in tl_info:
             for emp_name, emp_info in tl_info["employee"].items():
                 if emp_info.get("designation") == "TL":
-                    exp_nested = emp_info.get("experience") \
-                        if emp_info.get("experience") is not None else "N/A"
-                    print(f"    TL: {emp_name}, Experience: {exp_nested}")
+                    if emp_info.get("experience") is not None:
+                        exp_nested = emp_info["experience"]
+                    else:
+                        exp_nested = "N/A"
+                    print(f" TL: {emp_name}, Experience: {exp_nested}")
 
-# E.Smith left the company and all his members were assigned to Ryan.
-# Get Anne Hathaway's TL dictionary
+# E.Smith left the company and all his members were assigned to Ryan
 print("\n5))Smith left the company and all his members were assigned to Ryan")
 print("--------------------------------------------------------")
 anne_tl = company["anne_hathaway"]["TL"]
 if "smith" in anne_tl:
-    anne_tl["will"]["employee"]["ryan"].setdefault("employee", {}).update(
-        anne_tl["smith"].get("employee", {})
-    )
+    smith_employees = anne_tl["smith"].get("employee", {})
+    print("\nEmployees being transferred from Smith to Ryan:")
+    for emp_name, emp_info in smith_employees.items():
+        print(f"{emp_name} -> {emp_info['experience']}")
+    ryan_record = anne_tl["will"]["employee"]["ryan"]
+    ryan_record.update(smith_employees)
     del anne_tl["smith"]
-
-for tl_name, tl_info in anne_tl.items():
-    print(f"TL: {tl_name}, Experience: {tl_info.get('experience')}")
-    for emp_name, emp_info in tl_info.get("employee", {}).items():
-        print(f"Employee: {emp_name},"
-              f" Experience: {emp_info.get('experience')}")
-        for nested_name, nested_info in emp_info.get("employee", {}).items():
-            print(f"Nested Employee: {nested_name}, "
-                  f"Experience: {nested_info.get('experience')}")
+else:
+    print("Smith is not present in Anne Hathaway's TL list!")
 
 # F. Check company has any employee who has less than 2 years of experience
 print("\n6))Check company has any employee who has less "
       "than 2 years of experience.")
 print("-------------------------------------------------------------------")
-for name in company:
-    for tl, tl_name in company[name]["TL"].items():
+for pm_name in company:
+    for tl, tl_name in company[pm_name]["TL"].items():
         if tl_name.get("employee"):
             for key, value in tl_name["employee"].items():
                 if (value.get("experience") is not None and
@@ -194,26 +189,20 @@ for name in company:
 # G.Check whether Edge is TL or not if not make him TL.
 print("\n7) Check whether Edge is TL or not — if not, make him TL.")
 print("-------------------------------------------------------")
-
 anne_tl = company["anne_hathaway"]["TL"]
-
 edge_data = None
 current_tl = None
-
 for tl, tl_data in anne_tl.items():
     if "employee" in tl_data and "edge" in tl_data["employee"]:
         edge_data = tl_data["employee"]["edge"]
         current_tl = tl
         break
-
 if "edge" not in anne_tl and edge_data:
     del anne_tl[current_tl]["employee"]["edge"]
-
     anne_tl["edge"] = {
         "designation": "TL",
         "experience": edge_data["experience"],
         "employee": {}
     }
-
 for tl in anne_tl:
     print(tl)
