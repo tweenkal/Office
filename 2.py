@@ -73,24 +73,29 @@ company = {
 # A.Display all employees' names for the given project manager name
 print("1) Display all employees' names for the given project manager")
 print("---------------------------------------------------------------")
-pm_name1 = input("Enter the first Project Manager name: ").strip()
-pm_name2 = input("Enter the second Project Manager name: ").strip()
-pm_list = [pm_name1, pm_name2]
+print("1) Display all employees' names for the given project manager")
+print("---------------------------------------------------------------")
+
+pm_list = [
+    input("Enter the first Project Manager name: ").strip(),
+    input("Enter the second Project Manager name: ").strip()
+]
 
 for pm_name in pm_list:
-    if pm_name in company:
-        pm_info = company[pm_name]
-        print(f"\nProject Manager: {pm_name}")
-        for tl_name, tl_info in pm_info["TL"].items():
-            print("TL:", tl_name)
-            if "employee" in tl_info:
-                for emp_name, emp_info in tl_info["employee"].items():
-                    print("Employee:", emp_name)
-                    if emp_info.get("designation") == "TL" and "employee" in emp_info:
-                        for sub_employee_name in emp_info["employee"]:
-                            print("Employee under TL:", sub_employee_name)
-    else:
+    if pm_name not in company:
         print(f"Project Manager '{pm_name}' not found!")
+        continue
+    print(f"Project Manager: {pm_name}")
+    pm_info = company[pm_name]
+    for tl_name, tl_info in pm_info["TL"].items():
+        print("TL:", tl_name)
+        for emp_name, emp_info in tl_info.get("employee", {}).items():
+            print("Employee:", emp_name)
+            if emp_info.get("designation") == "TL":
+                for sub_emp in emp_info.get("employee", {}):
+                    print(" Employee under TL:", sub_emp)
+            else:
+                print("This employee has no team under them")
 
 # B.Display names of only those employees whose
 # experience is more than 4 years. Iterate through PMs
