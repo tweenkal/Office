@@ -206,6 +206,7 @@ print("\n7) Check whether Edge is TL or not — if not, make him TL.")
 print("-------------------------------------------------------")
 
 anne_tl = company["anne_hathaway"]["TL"]
+
 edge_data = None
 current_tl = None
 
@@ -215,14 +216,20 @@ for tl, tl_data in anne_tl.items():
         current_tl = tl
         break
 
-if "edge" not in anne_tl and edge_data:
+if "edge" not in anne_tl and edge_data is not None:
     del anne_tl[current_tl]["employee"]["edge"]
 
     anne_tl["edge"] = {
         "designation": "TL",
-        "experience": edge_data["experience"],
+        "experience": edge_data.get("experience"),
         "employee": {}
     }
 
+print("\nCurrent TLs under Anne Hathaway:")
 for tl in anne_tl:
     print(tl)
+
+if "edge" in company["anne_hathaway"]["TL"]:
+    print("Edge promoted to TL ")
+else:
+    print("Edge is still an employee")
