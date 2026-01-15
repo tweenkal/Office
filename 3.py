@@ -154,11 +154,11 @@ for shelf_name, products in store.items():
             all_costs.extend(month_data.get("cost", []))
         if all_costs:
             print(
-                f"  {product_name} → Max: {max(all_costs)}, "
+                f"{product_name} → Max: {max(all_costs)}, "
                 f"Min: {min(all_costs)}"
             )
         else:
-            print(f"  {product_name} → No cost data")
+            print(f"{product_name} → No cost data")
 
 # 7) display the Average cost and a sale also profit based on
 # the shelf for a specific month.
