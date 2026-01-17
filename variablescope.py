@@ -125,9 +125,9 @@ while True:
                 for state in country_data[country]:
                     if old_city_name in country_data[country][state]:
                         new_city_name = input("Enter new city name: ")
-                        index = country_data[country][state].index(
-                            old_city_name)
-                        country_data[country][state][index] = new_city_name
+                        country_data[country][state].remove(old_city_name)
+                        country_data[country][state].append(new_city_name)
+                        break
 
         # Print data after update
         print("\n--- Current Data After Update ---")
