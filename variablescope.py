@@ -65,13 +65,17 @@ while True:
 
             selected_state = input("Select state for this city: ")
 
-            state_found = False
+            all_states = []
             for country in country_data:
-                if selected_state in country_data[country]:
-                    country_data[country][selected_state].append(city_name)
-                    state_found = True
+                for state in country_data[country]:
+                    all_states.append(state)
 
-            if not state_found:
+            if selected_state in all_states:
+                for country in country_data:
+                    if selected_state in country_data[country]:
+                        country_data[country][selected_state].append(city_name)
+                        break
+            else:
                 print("Invalid state")
 
             add_another_city = input("Add another city? (Y/N): ").upper()
@@ -108,7 +112,7 @@ while True:
                 if old_state_name in country_data[country]:
                     new_state_name = input("Enter new state name: ")
                     country_data[country][new_state_name] = \
-                    country_data[country][old_state_name]
+                        country_data[country][old_state_name]
                     del country_data[country][old_state_name]
 
         # Update City
