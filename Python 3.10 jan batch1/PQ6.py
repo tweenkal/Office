@@ -1,6 +1,7 @@
 from datetime import datetime
 
 def calculate_age_simple(birth_year, birth_month, birth_day):
+    """Return current age in years based on birthdate."""
     today = datetime.today()
     age = today.year - birth_year
 
@@ -9,6 +10,7 @@ def calculate_age_simple(birth_year, birth_month, birth_day):
     return age
 
 def find_leap_years_simple(birth_year):
+    """Return list of leap years after birth year up to current year."""
     current_year = datetime.today().year
     leap_years = []
 
