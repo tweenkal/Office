@@ -1,15 +1,23 @@
 country_data = {}
 
 
-def ask_yes_no(msg):
+def get_yes_no(prompt):
+    """
+    Takes Y/N input from user.
+    Allows lowercase and uppercase.
+    Keeps asking until valid input is given.
+    """
     while True:
-        choice = input(msg).strip().upper()
+        choice = input(prompt).strip().upper()
         if choice in ("Y", "N"):
             return choice
         print("Invalid input. Please enter Y or N only.")
 
 
 def create_data():
+    """
+    Handles creation of countries, states, and cities.
+    """
     # -------- Create Countries --------
     while True:
         country_name = input("Enter country name: ").strip()
@@ -22,7 +30,7 @@ def create_data():
         else:
             print("Country already exists")
 
-        if ask_yes_no("Add another country? (Y/N): ") == "N":
+        if get_yes_no("Add another country? (Y/N): ") == "N":
             break
 
     # -------- Create States --------
@@ -40,7 +48,7 @@ def create_data():
         else:
             print("Invalid country")
 
-        if ask_yes_no("Add another state? (Y/N): ") == "N":
+        if get_yes_no("Add another state? (Y/N): ") == "N":
             break
 
     # -------- Create Cities --------
@@ -57,14 +65,16 @@ def create_data():
 
         selected_state = input("Select state for this city: ")
 
+        state_found = False
         for country in country_data:
             if selected_state in country_data[country]:
                 country_data[country][selected_state].append(city_name)
-                break
-        else:
+                state_found = True
+
+        if not state_found:
             print("Invalid state")
 
-        if ask_yes_no("Add another city? (Y/N): ") == "N":
+        if get_yes_no("Add another city? (Y/N): ") == "N":
             break
 
     print("\n--- Current Data After Create ---")
@@ -72,12 +82,17 @@ def create_data():
 
 
 def update_data():
+    """
+    Handles updating country, state, and city names.
+    """
     print("\nUpdate Options:")
     print("1. Update Country")
     print("2. Update State")
     print("3. Update City")
+
     update_choice = int(input("Choose option: "))
 
+    # -------- Update Country --------
     if update_choice == 1:
         print("Countries:", list(country_data.keys()))
         old_country = input("Enter country to update: ")
@@ -85,23 +100,21 @@ def update_data():
         if old_country in country_data:
             new_country = input("Enter new country name: ")
             country_data[new_country] = country_data.pop(old_country)
-        else:
-            print("Country not found")
 
+    # -------- Update State --------
     elif update_choice == 2:
-        for country in country_data:
-            print(country, ":", list(country_data[country].keys()))
+        for country, states in country_data.items():
+            print(country, ":", list(states.keys()))
 
         old_state = input("Enter state to update: ")
 
-        for country in country_data:
-            if old_state in country_data[country]:
+        for country, states in country_data.items():
+            if old_state in states:
                 new_state = input("Enter new state name: ")
-                country_data[country][new_state] = country_data[country].pop(old_state)
+                states[new_state] = states.pop(old_state)
                 break
-        else:
-            print("State not found")
 
+    # -------- Update City --------
     elif update_choice == 3:
         for country in country_data:
             for state in country_data[country]:
@@ -113,58 +126,43 @@ def update_data():
             for state in country_data[country]:
                 if old_city in country_data[country][state]:
                     new_city = input("Enter new city name: ")
-                    idx = country_data[country][state].index(old_city)
-                    country_data[country][state][idx] = new_city
-                    break
-            else:
-                continue
-            break
-        else:
-            print("City not found")
+                    index = country_data[country][state].index(old_city)
+                    country_data[country][state][index] = new_city
 
     print("\n--- Current Data After Update ---")
     print(country_data)
 
 
 def delete_data():
+    """
+    Handles deletion of country, state, and city.
+    """
     print("\nDelete Options:")
     print("1. Delete Country")
     print("2. Delete State")
     print("3. Delete City")
+
     delete_choice = int(input("Choose option: "))
 
+    # -------- Delete Country --------
     if delete_choice == 1:
         print("Countries:", list(country_data.keys()))
         country = input("Enter country to delete: ")
+        country_data.pop(country, None)
 
-        if country in country_data:
-            country_data.pop(country)
-        else:
-            print("Country not found")
-
+    # -------- Delete State --------
     elif delete_choice == 2:
         state = input("Enter state to delete: ")
-
         for country in country_data:
-            if state in country_data[country]:
-                country_data[country].pop(state)
-                break
-        else:
-            print("State not found")
+            country_data[country].pop(state, None)
 
+    # -------- Delete City --------
     elif delete_choice == 3:
         city = input("Enter city to delete: ")
-
         for country in country_data:
             for state in country_data[country]:
                 if city in country_data[country][state]:
                     country_data[country][state].remove(city)
-                    break
-            else:
-                continue
-            break
-        else:
-            print("City not found")
 
     print("\n--- Current Data After Delete ---")
     print(country_data)
@@ -180,8 +178,8 @@ while True:
 
     try:
         choice = int(input("Enter your choice: "))
-    except:
-        print("Invalid input. Enter number 1 to 4.")
+    except ValueError:
+        print("Invalid input. Enter a number from 1 to 4.")
         continue
 
     if choice == 1:
@@ -194,4 +192,4 @@ while True:
         print("Program Ended")
         break
     else:
-        print("Invalid choice. Enter 1, 2, 3, or 4.")
+        print("Invalid choice. Enter 1 to 4.")
